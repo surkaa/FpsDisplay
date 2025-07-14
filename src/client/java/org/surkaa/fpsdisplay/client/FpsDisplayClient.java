@@ -6,5 +6,6 @@ public class FpsDisplayClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        FpsOverlay.register(); // 注册 HUD 渲染器
     }
 }
