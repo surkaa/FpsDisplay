@@ -4,9 +4,11 @@
   "version": "${version}",
   "name": "FpsDisplay",
   "description": "用于显示游戏帧率",
-  "authors": [],
-  "contact": {},
-  "license": "All-Rights-Reserved",
+  "authors": ["SurKaa"],
+  "contact": {
+    "sources": "https://github.com/surkaa/FpsDisplay"
+  },
+  "license": "MIT",
   "icon": "assets/fpsdisplay/icon.png",
   "environment": "client",
   "entrypoints": {
