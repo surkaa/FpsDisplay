@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "fpsdisplay",
+  "version": "${version}",
+  "name": "FpsDisplay",
+  "description": "用于显示游戏帧率",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/fpsdisplay/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "org.surkaa.fpsdisplay.client.FpsDisplayClient"
+    ],
+    "main": [
+      "org.surkaa.fpsdisplay.FpsDisplay"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
