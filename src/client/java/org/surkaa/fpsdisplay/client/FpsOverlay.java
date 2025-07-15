@@ -13,10 +13,12 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class FpsOverlay {
-
-    private static final MinecraftClient client = MinecraftClient.getInstance();
     private static KeyBinding toggleHudKey;
     private static boolean hudVisible = true;
+
+    private static final int updateInterval = 20; // 每 20 tick 更新一次
+    private static int entityCount = 0;
+    private static int tickCounter = 0;
 
     public static void register() {
         // 注册渲染事件
@@ -35,10 +37,25 @@ public class FpsOverlay {
             while (toggleHudKey.wasPressed()) {
                 hudVisible = !hudVisible;
             }
+
+            if (client.world != null) {
+                tickCounter++;
+                if (tickCounter >= updateInterval) {
+                    tickCounter = 0;
+                    int count = 0;
+                    for (Entity entity : client.world.getEntities()) {
+                        if (entity != null && entity.isAlive()) {
+                            count++;
+                        }
+                    }
+                    entityCount = count;
+                }
+            }
         });
     }
 
     private static void render(DrawContext drawContext, float v) {
+        MinecraftClient client = MinecraftClient.getInstance();
         if (!hudVisible || client.player == null || client.textRenderer == null) return;
 
         TextRenderer textRenderer = client.textRenderer;
@@ -51,16 +68,7 @@ public class FpsOverlay {
         int fps = client.getCurrentFps();
         drawContext.drawText(textRenderer, Text.literal("FPS: " + fps), x, y, 0xFFFFFF, true);
 
-        // 实体数量（当前维度）
-        if (client.world == null) return;
-        Iterable<Entity> entityIterable = client.world.getEntities();
-        if (entityIterable == null) return;
-        int entityCount = 0;
-        for (Entity entity : entityIterable) {
-            if (entity != null && entity.isAlive()) {
-                entityCount++;
-            }
-        }
+        // 实体数量
         drawContext.drawText(textRenderer, Text.literal("EntityCount: " + entityCount), x, y + lineHeight, 0xFFFFFF, true);
     }
 }
