@@ -3,6 +3,7 @@ package org.surkaa.fpsdisplay.client;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -34,30 +35,33 @@ public class FpsOverlay {
                 )
         );
         // 每帧监听是否按下切换键
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (toggleHudKey.wasPressed()) {
-                hudVisible = !hudVisible;
-            }
+        ClientTickEvents.END_CLIENT_TICK.register(FpsOverlay::onEndTick);
+    }
 
-            if (client.world != null) {
-                tickCounter++;
-                if (tickCounter >= updateInterval) {
-                    tickCounter = 0;
-                    int count = 0;
-                    for (Entity entity : client.world.getEntities()) {
-                        if (entity != null && entity.isAlive()) {
-                            count++;
-                        }
+    private static void onEndTick(MinecraftClient client) {
+        while (toggleHudKey.wasPressed()) {
+            hudVisible = !hudVisible;
+        }
+
+        if (client.world != null && hudVisible) {
+            tickCounter++;
+            if (tickCounter >= updateInterval) {
+                tickCounter = 0;
+                int count = 0;
+                for (Entity entity : client.world.getEntities()) {
+                    if (entity != null && entity.isAlive()) {
+                        count++;
                     }
-                    entityCount = count;
                 }
+                entityCount = count;
             }
-        });
+        }
     }
 
     private static void render(DrawContext drawContext, float v) {
+        if (!hudVisible) return;
         MinecraftClient client = MinecraftClient.getInstance();
-        if (!hudVisible || client.player == null || client.textRenderer == null) return;
+        if (client.player == null || client.textRenderer == null) return;
 
         TextRenderer textRenderer = client.textRenderer;
 
