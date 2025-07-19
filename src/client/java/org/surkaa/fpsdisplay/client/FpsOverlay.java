@@ -10,6 +10,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
 public class FpsOverlay {
@@ -70,5 +71,10 @@ public class FpsOverlay {
 
         // 实体数量
         drawContext.drawText(textRenderer, Text.literal("EntityCount: " + entityCount), x, y + lineHeight, 0xFFFFFF, true);
+
+        // 玩家速度（blocks/sec）
+        Vec3d velocity = client.player.getVelocity();
+        double blocksPerSecond = velocity.length() * 20.0;
+        drawContext.drawText(textRenderer, Text.literal(String.format("Velocity: %.1f", blocksPerSecond)), x, y + 2 * lineHeight, 0xFFFFFF, true);
     }
 }
